@@ -38,6 +38,7 @@
     "src/**/*.{js,jsx}": [
       "prettier --write",
       "npm run lint"
-    ]
+    ],
+    "src/**/*.css": "prettier --write"
   }
 }
