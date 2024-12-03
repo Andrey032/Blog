@@ -1,0 +1,93 @@
+@use '../../styles/variables' as variables;
+
+.card {
+  max-width: 93.8rem;
+  margin: 0 auto 2.6rem;
+  background-color: variables.$backgroundColorBase;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+  border-radius: 0.5rem;
+
+  &__info {
+    max-width: 68.2rem;
+    padding: 1.5rem 8.5rem 2.4rem 1.6rem;
+  }
+
+  &__containerTitle {
+    display: flex;
+    align-items: center;
+    gap: 1.3rem;
+  }
+
+  &__title {
+    font-size: variables.$fontSize-L;
+    line-height: variables.$lineHeight-XL;
+    color: variables.$info-color;
+    font-weight: normal;
+    margin: 0 0 7px;
+    letter-spacing: 0.8px;
+  }
+
+  &__like {
+    font-size: variables.$fontSize-XS;
+    line-height: variables.$lineHeight-M;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    color: variables.$text-color;
+
+    &::before {
+      content: '';
+      cursor: pointer;
+      background-image: url('../../../public/heart.svg');
+      display: block;
+      height: 1.6rem;
+      width: 1.6rem;
+    }
+  }
+
+  &__tag {
+    font-size: variables.$fontSize-XS;
+    line-height: variables.$lineHeight-XS;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+    color: variables.$text-color;
+    padding: 2px 6px 3px 5px;
+  }
+
+  &__text {
+    font-size: variables.$fontSize-XS;
+    line-height: variables.$lineHeight-M;
+    margin: 7px 0 0;
+    letter-spacing: 0.3px;
+    color: variables.$text-color;
+    max-height: 4.5rem;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+  }
+
+  &__userContainer {
+    min-width: 13.5rem;
+    max-height: 4.6rem;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    margin-right: 1.4rem;
+  }
+
+  // &__user {}v
+
+  &__name {
+    font-size: variables.$fontSize-M;
+    line-height: variables.$lineHeight-XL;
+    font-weight: normal;
+    margin: 0;
+    color: variables.$text-color;
+  }
+
+  &__date {}
+}

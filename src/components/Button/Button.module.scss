@@ -1,0 +1,15 @@
+@use '../../styles/variables' as variables;
+
+.button {
+  font-size: variables.$fontSize-M;
+  line-height: variables.$lineHeight-XL;
+  background-color: variables.$backgroundColorBase;
+  border: none;
+  cursor: pointer;
+}
+.green {
+  border: 1px solid variables.$successColor;
+  border-radius: 0.5rem;
+  padding: 1.1rem 2.2rem;
+  color: variables.$successColor;
+}

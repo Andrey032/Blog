@@ -1,0 +1,6 @@
+@use '../../styles/variables' as variables;
+
+.content {
+  padding: 2.6rem 0;
+  background-color: variables.$backgroundColorContent;
+}
