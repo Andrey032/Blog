@@ -2,6 +2,7 @@
 
 .card {
   max-width: 93.8rem;
+  min-height: 14rem;
   margin: 0 auto 2.6rem;
   background-color: variables.$backgroundColorBase;
   display: flex;
@@ -29,31 +30,14 @@
     letter-spacing: 0.8px;
   }
 
-  &__like {
-    font-size: variables.$fontSize-XS;
-    line-height: variables.$lineHeight-M;
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    color: variables.$text-color;
-
-    &::before {
-      content: '';
-      cursor: pointer;
-      background-image: url('../../../public/heart.svg');
-      display: block;
-      height: 1.6rem;
-      width: 1.6rem;
-    }
-  }
-
   &__tag {
     font-size: variables.$fontSize-XS;
     line-height: variables.$lineHeight-XS;
     border: 1px solid rgba(0, 0, 0, 0.5);
     border-radius: 2px;
-    color: variables.$text-color;
+    color: variables.$textDescription;
     padding: 2px 6px 3px 5px;
+    margin-right: 0.8rem;
   }
 
   &__text {
@@ -61,7 +45,7 @@
     line-height: variables.$lineHeight-M;
     margin: 7px 0 0;
     letter-spacing: 0.3px;
-    color: variables.$text-color;
+    color: variables.$textDescription;
     max-height: 4.5rem;
     display: -webkit-box;
     line-clamp: 2;
@@ -79,15 +63,27 @@
     margin-right: 1.4rem;
   }
 
-  // &__user {}v
+  &__user {
+    margin-right: 1.2rem;
+  }
 
   &__name {
     font-size: variables.$fontSize-M;
     line-height: variables.$lineHeight-XL;
     font-weight: normal;
     margin: 0;
-    color: variables.$text-color;
+    color: variables.$textDescription;
   }
 
-  &__date {}
+  &__date {
+    font-size: variables.$fontSize-XS;
+    line-height: variables.$lineHeight-M;
+    color: variables.$textAdditional;
+    font-weight: 400;
+  }
+
+  &__avatar {
+    max-width: 4.6rem;
+    border-radius: 50%;
+  }
 }

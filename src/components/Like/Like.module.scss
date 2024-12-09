@@ -1,0 +1,33 @@
+@use '../../styles/variables' as variables;
+.checkbox {
+  width: 3.4rem;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+
+  &__input {
+    appearance: none;
+    display: inline-grid;
+    place-content: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    background-image: url('../../../public/heart.svg');
+    margin-right: 3px;
+    
+    &:checked::after {
+      content: '';
+      width: 1.6rem;
+      height: 1.6rem;
+      background-image: url('../../../public/heart_red.svg');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-color: variables.$backgroundColorBase;
+    }
+  }
+
+
+  &__label {
+    font-size: variables.$fontSize-XS;
+    line-height: variables.$lineHeight-M;
+  }
+}

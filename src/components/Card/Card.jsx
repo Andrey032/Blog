@@ -1,31 +1,37 @@
+import Like from '../Like/Like';
 import cardStyle from './Card.module.scss';
-console.log(cardStyle);
+import { format } from 'date-fns';
 
-export default function Card() {
+export default function Card({
+  title,
+  favoritesCount,
+  tagList,
+  description,
+  createdAt,
+  author: { username, image },
+}) {
   return (
     <article className={cardStyle.card}>
       <div className={cardStyle.card__info}>
         <div className={cardStyle.card__containerTitle}>
-          <h2 className={cardStyle.card__title}>Some article title</h2>
-          <label>
-            <input type='checkbox' />
-            12
-          </label>
-          {/* <span className={cardStyle.card__like}>12</span> */}
+          <h2 className={cardStyle.card__title}>{title}</h2>
+          <Like like={favoritesCount} />
         </div>
-        <span className={cardStyle.card__tag}>Tag1</span>
-        <p className={cardStyle.card__text}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-          ullamco laboris nisi ut aliquip ex ea commodo consequat. ex ea commodo consequat.
-        </p>
+        {tagList.map((tag, i) => (
+          <span key={`${tag}${i}`} className={cardStyle.card__tag}>
+            {tag}
+          </span>
+        ))}
+        <p className={cardStyle.card__text}>{description}</p>
       </div>
       <div className={cardStyle.card__userContainer}>
         <div className={cardStyle.card__user}>
-          <h2 className={cardStyle.card__name}>John Doe</h2>
-          <span className='card__date'>March 5, 2020 </span>
+          <h2 className={cardStyle.card__name}>{username}</h2>
+          <span className={cardStyle.card__date}>
+            {format(new Date(createdAt), 'MMMM d, yyyy')}
+          </span>
         </div>
-        <img className='cart__avatar' src='avatar.svg' alt='аватар профиля' />
+        <img className={cardStyle.card__avatar} src={image} alt='аватар профиля' />
       </div>
     </article>
   );

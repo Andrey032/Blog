@@ -9,7 +9,7 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 export default [
   { ignores: ['dist'] },
   {
-    files: ['**/*.{js,jsx}'],
+    files: ['**/*.{js,mjs,cjs}'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
