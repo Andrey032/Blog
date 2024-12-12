@@ -1,0 +1,71 @@
+@use './variables' as variables;
+%text_extend {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+%container_title {
+  display: flex;
+  align-items: center;
+  gap: 1.3rem;
+  margin-bottom: 0.4rem;
+}
+
+%title {
+  font-size: variables.$fontSize-L;
+  line-height: variables.$lineHeight-XL;
+  color: variables.$info-color;
+  font-weight: normal;
+  letter-spacing: 0.8px;
+}
+
+%tag {
+  font-size: variables.$fontSize-XS;
+  line-height: variables.$lineHeight-XS;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 3px;
+  color: variables.$textDescription;
+  padding: 2px 6px 3px 5px;
+  margin-right: 0.8rem;
+  max-width: 10rem;
+}
+
+%text {
+  font-size: variables.$fontSize-XS;
+  line-height: variables.$lineHeight-M;
+  letter-spacing: 0.3px;
+  color: variables.$textDescription;
+  max-height: 4.5rem;
+}
+
+%userContainer {
+  max-width: 17rem;
+  max-height: 4.6rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+%name {
+  font-size: variables.$fontSize-M;
+  line-height: variables.$lineHeight-XL;
+  font-weight: normal;
+  margin: 0;
+  color: variables.$textDescription;
+  text-align: end;
+}
+
+%date {
+  font-size: variables.$fontSize-XS;
+  line-height: variables.$lineHeight-XS;
+  color: variables.$textAdditional;
+  font-weight: 400;
+}
+
+%avatar {
+  max-width: 4.6rem;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}

@@ -1,24 +1,24 @@
 @use '../../styles/variables' as variables;
 @use '../../styles/extends' as extend;
 
-.card {
+.post {
   max-width: 93.8rem;
-  min-height: 14rem;
-  margin: 0 auto 2.6rem;
   background-color: variables.$backgroundColorBase;
-  display: flex;
-  justify-content: space-between;
-  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
-  border-radius: 0.5rem;
+  margin: 2.6rem auto 1.6rem;
+  box-shadow: 0 4px 12px 0 #00000026;
 
-  &:last-child {
-    margin-bottom: 0;
+  &__wrapper {
+    padding: 1.5rem 1.4rem 1.5rem 1.6rem;
   }
 
   &__info {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__containerDescription {
     max-width: 68.2rem;
-    padding: 1.5rem 0 2.4rem 1.6rem;
-    box-sizing: border-box;
+    // @extend %text_extend;
   }
 
   &__containerTitle {
@@ -26,7 +26,7 @@
   }
 
   &__title {
-    text-decoration: none;
+    margin: 0;
     @extend %title;
     @extend %text_extend;
   }
@@ -37,17 +37,12 @@
   }
 
   &__text {
-    margin: 7px 0 0;
-    width: 100%;
+    margin: 1.3rem 0 0;
     @extend %text;
-    @extend %text_extend;
   }
 
-  &__userContainer {
+  &__containerUser {
     @extend %userContainer;
-    align-items: center;
-    margin-top: 1.5rem;
-    margin-right: 1.4rem;
   }
 
   &__user {

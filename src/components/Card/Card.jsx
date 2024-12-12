@@ -1,8 +1,10 @@
+import { Link } from 'react-router-dom';
 import Like from '../Like/Like';
 import cardStyle from './Card.module.scss';
 import { format } from 'date-fns';
 
 export default function Card({
+  slug,
   title,
   favoritesCount,
   tagList,
@@ -11,13 +13,15 @@ export default function Card({
   author: { username, image },
 }) {
   return (
-    <article className={cardStyle.card}>
+    <li className={cardStyle.card}>
       <div className={cardStyle.card__info}>
         <div className={cardStyle.card__containerTitle}>
-          <h2 className={cardStyle.card__title}>{title}</h2>
+          <Link to={`/articles/${slug}`} className={cardStyle.card__title}>
+            {title}
+          </Link>
           <Like like={favoritesCount} />
         </div>
-        {tagList.map((tag, i) => (
+        {tagList?.map((tag, i) => (
           <span key={`${tag}${i}`} className={cardStyle.card__tag}>
             {tag}
           </span>
@@ -33,6 +37,6 @@ export default function Card({
         </div>
         <img className={cardStyle.card__avatar} src={image} alt='аватар профиля' />
       </div>
-    </article>
+    </li>
   );
 }
