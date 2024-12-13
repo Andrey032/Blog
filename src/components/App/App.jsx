@@ -8,6 +8,8 @@ import NotFoundPage from '../NotFoundPage/NotFoundPage';
 import Layout from '../Layout';
 import SinglePage from '../SinglePage';
 import SignUp from '../SignUp';
+import SignIn from '../SignIn';
+import EditProfile from '../EditProfile';
 
 import { loadBlogs, offsetSelector } from '../../features/blogs/blogsSlice';
 
@@ -27,6 +29,8 @@ function App() {
           <Route path='articles' element={<CardsList />} />
           <Route path='articles/:slug' element={<SinglePage />} />
           <Route path='sign-up' element={<SignUp />} />
+          <Route path='sign-in' element={<SignIn />} />
+          <Route path='profile' element={<EditProfile />} />
 
           <Route path='*' element={<NotFoundPage />} />
         </Route>
