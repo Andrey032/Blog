@@ -1,0 +1,59 @@
+@use '../../styles/variables' as variables;
+
+.labelInput {
+  display: flex;
+  flex-direction: column;
+  font-size: variables.$fontSize-S;
+  min-height: 6.4rem;
+  line-height: variables.$lineHeight-M;
+  margin-bottom: 1.2rem;
+
+  &__input {
+    height: 4rem;
+    border: 1px solid variables.$borderColor;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding-left: 10px;
+
+    &::placeholder {
+      color: variables.$placeholderColor;
+    }
+  }
+
+  &__checkboxInput {
+    position: absolute;
+    appearance: none;
+    
+    &:checked + .labelInput__checkbox {
+      background-image: url('checked.svg');
+      background-position: center;
+    }
+  }
+  
+
+  &__checkbox {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 1em;
+    height: 1em;
+    border: 1px solid variables.$info-color;
+    border-radius: 3px;
+  }
+  &:nth-child(4) {
+    margin-bottom: 2.1rem;
+  }
+}
+
+.labelCheckbox {
+  display: block;
+  position: relative;
+  font-size: variables.$fontSize-S;
+  line-height: variables.$lineHeight-M;
+  margin-top: -2px;
+  color: #595959;
+  margin-bottom: 2.1rem;
+  padding-left: 23px;
+  cursor: pointer;
+}
+
