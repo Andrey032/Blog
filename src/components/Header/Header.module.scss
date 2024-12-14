@@ -1,3 +1,5 @@
+@use '../../styles/variables' as variables;
+
 .header {
   background-color: #fff;
   display: flex;
@@ -14,9 +16,30 @@
     letter-spacing: 0.5px;
   }
 
-  &__containerBtn {
+  &__containerLogin {
     padding-right: 2.2rem;
     display: flex;
     gap: 4rem;
+  }
+
+  &__containerLogout {
+    padding-right: 2.2rem;
+    display: flex;
+    align-items: center;
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: 1.3rem;
+    margin-left: 3rem;
+    margin-right: 2.7rem;
+  }
+
+  &__userName {
+    font-size: variables.$fontSize-M;
+    line-height: variables.$lineHeight-XL;
+    font-weight: normal;
+    margin: 0;
   }
 }

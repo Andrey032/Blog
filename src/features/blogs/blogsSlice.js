@@ -32,7 +32,7 @@ const initialState = {
   article: null,
   articlesCount: 0,
   isLoading: false,
-  isLoggedIn: false,
+  isLoggedIn: true,
   error: null,
   isLike: false,
   currentPage: 1,
@@ -90,3 +90,4 @@ export const loadingSelector = (state) => state.isLoading;
 export const errorSelector = (state) => state.error;
 export const currentPageSelector = (state) => state.currentPage;
 export const offsetSelector = (state) => state.offset;
+export const loggedInSelector = (state) => state.isLoggedIn;

@@ -7,6 +7,7 @@
   min-height: 6.4rem;
   line-height: variables.$lineHeight-M;
   margin-bottom: 1.2rem;
+  position: relative;
 
   &__input {
     height: 4rem;
@@ -25,20 +26,28 @@
   }
 
   &__error {
-    display: none;
     color: variables.$invalidInput;
+    position: absolute;
+    top: 60px;
+  }
+
+  &__errorCheckbox {
+    color: variables.$invalidInput;
+    position: absolute;
+    top: 40px;
+    left: 0;
   }
 
   &__checkboxInput {
     position: absolute;
     appearance: none;
-    
+
     &:checked + .labelInput__checkbox {
       background-image: url('checked.svg');
       background-position: center;
     }
   }
-  
+
   &__checkbox {
     position: absolute;
     left: 0;
@@ -61,4 +70,3 @@
   padding-left: 23px;
   cursor: pointer;
 }
-

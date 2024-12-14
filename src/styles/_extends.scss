@@ -1,7 +1,9 @@
 @use './variables' as variables;
 %text_extend {
-  display: inline-block;
-  white-space: nowrap;
+  display: -webkit-box;
+  word-wrap: break-word;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -19,6 +21,7 @@
   color: variables.$info-color;
   font-weight: normal;
   letter-spacing: 0.8px;
+  -webkit-line-clamp: 1;
 }
 
 %tag {
@@ -30,6 +33,10 @@
   padding: 2px 6px 3px 5px;
   margin-right: 0.8rem;
   max-width: 10rem;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 %text {
@@ -64,8 +71,8 @@
 }
 
 %avatar {
-  max-width: 4.6rem;
-  height: 100%;
+  width: 4.6rem;
+  height: 4.6rem;
   border-radius: 50%;
   object-fit: cover;
 }

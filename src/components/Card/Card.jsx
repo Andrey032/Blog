@@ -35,7 +35,7 @@ export default function Card({
             {format(new Date(createdAt), 'MMMM d, yyyy')}
           </span>
         </div>
-        <img className={cardStyle.card__avatar} src={image} alt='аватар профиля' />
+        <img className={cardStyle.card__avatar} src={image} alt='аватар' />
       </div>
     </li>
   );

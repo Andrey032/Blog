@@ -1,4 +1,5 @@
 import signUpStyle from './SignUp.module.scss';
+import { useForm } from 'react-hook-form';
 
 import Input from '../Input';
 import Form from '../Form';
@@ -6,22 +7,74 @@ import Form from '../Form';
 import { username, email, password } from '../../utils/regex';
 
 export default function SignUp() {
-  const handleSubmit = (evt) => {
-    evt.preventDefault();
-    console.log('SignUp');
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isValid },
+    reset,
+  } = useForm();
+
+  const onSubmit = (data) => {
+    console.log(data);
+    reset();
   };
 
   return (
-    <Form handleSubmit={handleSubmit} title='Create new account' textBtn='Create'>
-      <div>
-        <Input text='Username' pattern={username} required />
-        <Input text='Email address' type='email' pattern={email} required />
-        <Input text='Password' type='password' pattern={password} required />
-        <Input text='Repeat Password' type='password' pattern={password} required />
+    <Form
+      onSubmit={handleSubmit(onSubmit)}
+      title='Create new account'
+      textBtn='Create'
+      isValid={isValid}
+    >
+      <div className={signUpStyle.container}>
+        <Input
+          text='Username'
+          name='user'
+          pattern={username}
+          required='Введите ваше имя'
+          register={register}
+          errors={errors}
+          minLength={3}
+          maxLength={20}
+        />
+        <Input
+          text='Email address'
+          name='email'
+          type='email'
+          pattern={email}
+          required='Введите вашу электронную почту '
+          register={register}
+          errors={errors}
+        />
+        <Input
+          text='Password'
+          name='password'
+          type='password'
+          pattern={password}
+          required='Введите пароль'
+          register={register}
+          errors={errors}
+        />
+        <Input
+          text='Repeat Password'
+          name='repeat'
+          type='password'
+          pattern={password}
+          required='Введите повторно пароль'
+          register={register}
+          errors={errors}
+        />
       </div>
 
       <div className={signUpStyle.border}></div>
-      <Input text={'I agree to the processing of my personal information'} type='checkbox' />
+      <Input
+        text={'I agree to the processing of my personal information'}
+        name='checkbox'
+        type='checkbox'
+        required='Отметьте галочку'
+        register={register}
+        errors={errors}
+      />
     </Form>
   );
 }

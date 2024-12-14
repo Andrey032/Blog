@@ -1,10 +1,11 @@
 import formStyle from './Form.module.scss';
 import { Link } from 'react-router-dom';
 
-export default function Form({ handleSubmit, title, children, textBtn }) {
+export default function Form({ onSubmit, title, children, textBtn, isValid }) {
   const text = textBtn === 'Create' ? 'Already have an account? ' : 'Don’t have an account? ';
+
   return (
-    <form onSubmit={handleSubmit} className={formStyle.form}>
+    <form onSubmit={onSubmit} className={formStyle.form}>
       <div className={formStyle.form__container}>
         <h2 className={formStyle.form__title}>{title}</h2>
         {children}

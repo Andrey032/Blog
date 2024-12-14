@@ -2,14 +2,36 @@
 
 .button {
   font-size: variables.$fontSize-M;
-  line-height: variables.$lineHeight-XL;
   background-color: variables.$backgroundColorBase;
   border: none;
+  border-radius: 0.5rem;
   cursor: pointer;
 }
+
 .green {
   border: 1px solid variables.$successColor;
-  border-radius: 0.5rem;
-  padding: 1.1rem 2.2rem;
   color: variables.$successColor;
+}
+
+.grey {
+  border: 1px solid variables.$textDescription;
+  color: variables.$textDescription;
+}
+
+.red {
+  border: 1px solid variables.$invalidInput;
+  color: variables.$invalidInput;
+}
+
+.small {
+  padding: 0.2rem 1.9rem;
+  font-size: variables.$fontSize-S;
+  line-height: variables.$lineHeight-M;
+}
+
+.middle {}
+
+.big {
+  padding: 1rem 2.1rem;
+  line-height: variables.$lineHeight-XL;
 }

@@ -18,7 +18,6 @@
 
   &__containerDescription {
     max-width: 68.2rem;
-    // @extend %text_extend;
   }
 
   &__containerTitle {
@@ -42,6 +41,7 @@
   }
 
   &__containerUser {
+    padding-bottom: 3rem;
     @extend %userContainer;
   }
 
@@ -60,5 +60,11 @@
 
   &__avatar {
     @extend %avatar;
+  }
+
+  &__containerBtn {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1.2rem;
   }
 }

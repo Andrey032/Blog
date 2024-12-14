@@ -1,19 +1,46 @@
+import signInStyle from './SignIn.module.scss';
+
 import Form from '../Form';
 import Input from '../Input';
+
+import { useForm } from 'react-hook-form';
 
 import { email, password } from '../../utils/regex';
 
 export default function SignIn() {
-  const handleSubmit = (evt) => {
-    evt.preventDefault();
-    console.log('SignIn');
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+    reset,
+  } = useForm();
+
+  const onSubmit = (data) => {
+    console.log(data);
+    reset();
   };
 
   return (
-    <Form handleSubmit={handleSubmit} title='Sign In' textBtn='Login'>
-      <div>
-        <Input text='Email address' type='email' pattern={email} required />
-        <Input text='Password' type='password' pattern={password} required />
+    <Form onSubmit={handleSubmit(onSubmit)} title='Sign In' textBtn='Login'>
+      <div className={signInStyle.container}>
+        <Input
+          text='Email address'
+          name='email'
+          type='email'
+          pattern={email}
+          required
+          register={register}
+          errors={errors}
+        />
+        <Input
+          text='Password'
+          name='password'
+          type='password'
+          pattern={password}
+          required
+          register={register}
+          errors={errors}
+        />
       </div>
     </Form>
   );

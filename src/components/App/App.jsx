@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import CardsList from '../CardsList';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
 import Layout from '../Layout';
-import SinglePage from '../SinglePage';
+import Post from '../Post';
 import SignUp from '../SignUp';
 import SignIn from '../SignIn';
 import EditProfile from '../EditProfile';
@@ -27,7 +27,7 @@ function App() {
         <Route path='/' element={<Layout />}>
           <Route index element={<CardsList />} />
           <Route path='articles' element={<CardsList />} />
-          <Route path='articles/:slug' element={<SinglePage />} />
+          <Route path='articles/:slug' element={<Post />} />
           <Route path='sign-up' element={<SignUp />} />
           <Route path='sign-in' element={<SignIn />} />
           <Route path='profile' element={<EditProfile />} />

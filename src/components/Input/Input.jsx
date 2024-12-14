@@ -1,6 +1,16 @@
 import inputStyle from './Input.module.scss';
 
-export default function Input({ text, type = 'text', pattern, required = false }) {
+export default function Input({
+  text,
+  name,
+  type = 'text',
+  pattern,
+  required = false,
+  register,
+  errors,
+  minLength,
+  maxLength,
+}) {
   return (
     <label className={type === 'checkbox' ? inputStyle.labelCheckbox : inputStyle.labelInput}>
       {text}
@@ -11,14 +21,32 @@ export default function Input({ text, type = 'text', pattern, required = false }
         type={type}
         name={text}
         placeholder={text}
-        pattern={pattern}
-        required={required}
+        {...(register &&
+          register(name, {
+            required,
+            pattern,
+            minLength: {
+              value: minLength,
+              message: `Минимум ${minLength} символа`,
+            },
+            maxLength: {
+              value: maxLength,
+              message: `Максимум ${maxLength} символов`,
+            },
+          }))}
       />
-      {type !== 'checkbox' && (
-        <span className={inputStyle.labelInput__error}>
-          Your password needs to be at least 6 characters.
+      {errors[name] && (
+        <span
+          className={
+            name === 'checkbox'
+              ? inputStyle.labelInput__errorCheckbox
+              : inputStyle.labelInput__error
+          }
+        >
+          {errors[name].message}
         </span>
       )}
+
       {type === 'checkbox' && <span className={inputStyle.labelInput__checkbox}></span>}
     </label>
   );
