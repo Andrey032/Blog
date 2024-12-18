@@ -1,8 +1,12 @@
-import errorStyle from './Error.module.scss';
-import { errorSelector } from '../../features/blogs/blogsSlice';
 import { useSelector } from 'react-redux';
 
-export default function Error() {
+import { errorSelector } from '../../features/blogs/blogsSlice';
+
+import style from './Error.module.scss';
+
+const Error = () => {
   const error = useSelector(errorSelector);
-  return <h2 className={errorStyle.error}>{error}</h2>;
-}
+  return <h2 className={style.error}>{error}</h2>;
+};
+
+export default Error;

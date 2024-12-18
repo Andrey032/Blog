@@ -1,12 +1,13 @@
 import { ConfigProvider, Pagination } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
+
 import {
   articlesCountSelector,
   currentPageSelector,
   setPage,
 } from '../../features/blogs/blogsSlice';
 
-export default function PaginationComponent() {
+const PaginationComponent = () => {
   const dispatch = useDispatch();
   const articlesCount = useSelector(articlesCountSelector);
   const currentPage = useSelector(currentPageSelector);
@@ -41,4 +42,6 @@ export default function PaginationComponent() {
       />
     </ConfigProvider>
   );
-}
+};
+
+export default PaginationComponent;

@@ -1,21 +1,34 @@
-import signUpStyle from './SignUp.module.scss';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import Input from '../Input';
 import Form from '../Form';
-
 import { username, email, password } from '../../utils/regex';
+import { createNewUser } from '../../features/blogs/blogsSlice';
 
-export default function SignUp() {
+import style from './SignUp.module.scss';
+
+const SignUp = () => {
+  const dispatch = useDispatch();
+
   const {
     handleSubmit,
     register,
     formState: { errors, isValid },
     reset,
-  } = useForm();
+  } = useForm({
+    mode: 'onChange',
+  });
 
   const onSubmit = (data) => {
-    console.log(data);
+    const newUser = {
+      user: {
+        username: data.user,
+        email: data.email,
+        password: data.password,
+      },
+    };
+    dispatch(createNewUser(newUser));
     reset();
   };
 
@@ -26,55 +39,65 @@ export default function SignUp() {
       textBtn='Create'
       isValid={isValid}
     >
-      <div className={signUpStyle.container}>
+      <div className={style.container}>
         <Input
           text='Username'
           name='user'
           pattern={username}
-          required='Введите ваше имя'
+          required
           register={register}
-          errors={errors}
           minLength={3}
           maxLength={20}
+          errors={errors}
+          title='Не меньше 3х первых букв'
         />
         <Input
           text='Email address'
           name='email'
           type='email'
           pattern={email}
-          required='Введите вашу электронную почту '
+          required
           register={register}
           errors={errors}
+          title='Латинскими буквами в формате mail@mail.com'
         />
         <Input
           text='Password'
           name='password'
           type='password'
           pattern={password}
-          required='Введите пароль'
+          required
           register={register}
+          minLength={6}
+          maxLength={40}
           errors={errors}
+          title='Не меньше 3х латинских букв и 3х цифр'
         />
         <Input
           text='Repeat Password'
           name='repeat'
           type='password'
           pattern={password}
-          required='Введите повторно пароль'
+          required
           register={register}
+          minLength={6}
+          maxLength={40}
           errors={errors}
+          title='Введите повторно пароль'
         />
       </div>
 
-      <div className={signUpStyle.border}></div>
+      <div className={style.border}></div>
       <Input
-        text={'I agree to the processing of my personal information'}
+        text='I agree to the processing of my personal information'
         name='checkbox'
         type='checkbox'
-        required='Отметьте галочку'
+        required='Отметьте если согласны'
         register={register}
         errors={errors}
       />
     </Form>
   );
-}
+};
+
+export default SignUp;

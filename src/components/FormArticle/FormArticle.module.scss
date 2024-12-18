@@ -1,0 +1,84 @@
+@use '../../styles/extends' as extend;
+@use '../../styles/variables' as variables;
+
+.article {
+  max-width: 93.8rem;
+  min-height: 70.1rem;
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 3.4rem;
+  @extend %shadow;
+  background-color: variables.$backgroundColorBase;
+  border: 1px solid variables.$borderColor;
+  border-radius: 6px;
+
+  &__title {
+    color: variables.$articleTitle;
+    margin: 0;
+    display: block;
+    margin: 4.8rem 0 2.1rem;
+    font-size: variables.$fontSize-L;
+    font-weight: variables.$fontWeightSemibold;
+    text-align: center;
+  }
+
+  &__form {
+    max-width: 87.4rem;
+    margin: 0 auto;
+    padding-bottom: 4.8rem;
+  }
+
+  &__label {
+    display: flex;
+    flex-direction: column;
+    font-size: variables.$fontSize-S;
+    line-height: variables.$lineHeight-M;
+    color: variables.$articleTitle;
+    margin-bottom: 2.1rem;
+  }
+
+  &__textArea {
+    min-height: 16rem;
+    resize: none;
+    border-color: variables.$borderColor;
+    border-radius: 4px;
+    padding-top: 0.7rem;
+    padding-left: 1.2rem;
+    font-size: 16px;
+
+    &::placeholder {
+      color: variables.$placeholderColor;
+    }
+  }
+
+  &__tagsContainer {
+    display: flex;
+    gap: 3px;
+    flex-direction: column;
+    font-size: variables.$fontSize-S;
+    line-height: variables.$lineHeight-M;
+    color: variables.$articleTitle;
+    margin-bottom: 2.1rem;
+  }
+
+  &__tag {
+    display: flex;
+    align-items: center;
+    gap: 1.7rem;
+  }
+
+  &__inputTag {
+    @extend %input;
+    min-width: 30rem;
+  }
+
+  &__inputContainer {
+    display: flex;
+    gap: 1.7rem;
+  }
+
+  &__buttonSubmit {
+    max-width: 31.9rem;
+  }
+}

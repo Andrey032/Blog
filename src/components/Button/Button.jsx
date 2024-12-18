@@ -1,14 +1,21 @@
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import buttonStyle from './Button.module.scss';
 
-export default function Button({ text, color = '', size = '' }) {
+import style from './Button.module.scss';
+
+const Button = ({ text, color = '', size = '', onClick, type = 'button', disabled = false }) => {
   const colorBtn = classNames(
-    color ? `${buttonStyle.button} ${buttonStyle[color]} ${buttonStyle[size]}` : buttonStyle.button
+    color ? `${style.button} ${style[color]} ${style[size]}` : style.button
   );
 
-  return <button className={colorBtn}>{text}</button>;
-}
+  return (
+    <button onClick={onClick} className={colorBtn} type={type} disabled={disabled}>
+      {text}
+    </button>
+  );
+};
+
+export default Button;
 
 Button.propTypes = {
   text: PropTypes.string,

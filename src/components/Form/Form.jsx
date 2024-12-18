@@ -1,27 +1,27 @@
-import formStyle from './Form.module.scss';
 import { Link } from 'react-router-dom';
 
-export default function Form({ onSubmit, title, children, textBtn, isValid }) {
+import style from './Form.module.scss';
+import ButtonSubmit from '../ButtonSubmit/ButtonSubmit';
+
+const Form = ({ onSubmit, title, children, textBtn, isValid }) => {
   const text = textBtn === 'Create' ? 'Already have an account? ' : 'Don’t have an account? ';
 
   return (
-    <form onSubmit={onSubmit} className={formStyle.form}>
-      <div className={formStyle.form__container}>
-        <h2 className={formStyle.form__title}>{title}</h2>
+    <form onSubmit={onSubmit} className={style.form}>
+      <div className={style.form__container}>
+        <h2 className={style.form__title}>{title}</h2>
         {children}
-        <button type='submit' className={formStyle.form__btn}>
-          {textBtn}
-        </button>
+        <ButtonSubmit textBtn={textBtn} isValid={isValid} />
         {(textBtn === 'Create' || textBtn === 'Login') && (
-          <p className={formStyle.form__text}>
+          <p className={style.form__text}>
             {text}
             {textBtn === 'Create' && (
-              <Link to={'/sign-in'} className={formStyle.form__link}>
+              <Link to={'/sign-in'} className={style.form__link}>
                 Sign In.
               </Link>
             )}
             {textBtn === 'Login' && (
-              <Link to={'/sign-up'} className={formStyle.form__link}>
+              <Link to={'/sign-up'} className={style.form__link}>
                 Sign Up.
               </Link>
             )}
@@ -30,4 +30,6 @@ export default function Form({ onSubmit, title, children, textBtn, isValid }) {
       </div>
     </form>
   );
-}
+};
+
+export default Form;

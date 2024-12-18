@@ -1,4 +1,5 @@
 @use '../../styles/variables' as variables;
+@use '../../styles/extends' as extend;
 
 .labelInput {
   display: flex;
@@ -10,19 +11,11 @@
   position: relative;
 
   &__input {
-    height: 4rem;
-    border: 1px solid variables.$borderColor;
-    border-radius: 4px;
-    box-sizing: border-box;
-    padding-left: 10px;
+    @extend %input;
+  }
 
-    &::placeholder {
-      color: variables.$placeholderColor;
-    }
-
-    &:invalid {
-      border-color: variables.$invalidInput;
-    }
+  &__invalid {
+    border-color: variables.$invalidInput;
   }
 
   &__error {
@@ -56,6 +49,11 @@
     height: 1em;
     border: 1px solid variables.$info-color;
     border-radius: 3px;
+  }
+
+  &__indent {
+    margin-bottom: 2.1rem;
+    gap: 4px;
   }
 }
 

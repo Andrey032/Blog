@@ -1,11 +1,12 @@
-import Header from '../Header';
-import Error from '../Error';
 import { Outlet } from 'react-router-dom';
-import Spiner from '../Spiner';
-import { loadingSelector, errorSelector } from '../../features/blogs/blogsSlice';
 import { useSelector } from 'react-redux';
 
-export default function Layout() {
+import Header from '../Header';
+import Error from '../Error';
+import Spiner from '../Spiner';
+import { loadingSelector, errorSelector } from '../../features/blogs/blogsSlice';
+
+const Layout = () => {
   const isLoading = useSelector(loadingSelector);
   const error = useSelector(errorSelector);
 
@@ -17,4 +18,6 @@ export default function Layout() {
       {!isLoading && !error && <Outlet />}
     </>
   );
-}
+};
+
+export default Layout;

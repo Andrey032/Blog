@@ -1,4 +1,5 @@
 @use '../../styles/variables' as variables;
+@use '../../styles/extends' as extend;
 
 .header {
   background-color: #fff;
@@ -34,6 +35,8 @@
     gap: 1.3rem;
     margin-left: 3rem;
     margin-right: 2.7rem;
+    color: variables.$headingColor;
+    text-decoration: none;
   }
 
   &__userName {
@@ -41,5 +44,9 @@
     line-height: variables.$lineHeight-XL;
     font-weight: normal;
     margin: 0;
+  }
+
+  &__image {
+    @extend %avatar;
   }
 }

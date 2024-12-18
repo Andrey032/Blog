@@ -1,30 +1,49 @@
-import inputStyle from './Input.module.scss';
+import classnames from 'classnames';
 
-export default function Input({
+import style from './Input.module.scss';
+
+const Input = ({
   text,
   name,
   type = 'text',
-  pattern,
+  pattern = '',
+  title,
   required = false,
   register,
-  errors,
   minLength,
   maxLength,
-}) {
+  errors = '',
+  indent = false,
+}) => {
+  const input = classnames(
+    type === 'checkbox'
+      ? style.labelInput__checkboxInput
+      : errors[name] && errors[name].message !== ''
+        ? `${style.labelInput__input} ${style.labelInput__invalid}`
+        : style.labelInput__input
+  );
+
+  const label = classnames(
+    type === 'checkbox'
+      ? style.labelCheckbox
+      : `${style.labelInput} ${indent && style.labelInput__indent}`
+  );
+
   return (
-    <label className={type === 'checkbox' ? inputStyle.labelCheckbox : inputStyle.labelInput}>
+    <label className={label}>
       {text}
       <input
-        className={
-          type === 'checkbox' ? inputStyle.labelInput__checkboxInput : inputStyle.labelInput__input
-        }
+        className={input}
         type={type}
-        name={text}
         placeholder={text}
+        title={title}
         {...(register &&
           register(name, {
             required,
-            pattern,
+            pattern: {
+              value: pattern,
+              message: `Перепроверьте введённые данные`,
+            },
             minLength: {
               value: minLength,
               message: `Минимум ${minLength} символа`,
@@ -38,16 +57,15 @@ export default function Input({
       {errors[name] && (
         <span
           className={
-            name === 'checkbox'
-              ? inputStyle.labelInput__errorCheckbox
-              : inputStyle.labelInput__error
+            name === 'checkbox' ? style.labelInput__errorCheckbox : style.labelInput__error
           }
         >
           {errors[name].message}
         </span>
       )}
-
-      {type === 'checkbox' && <span className={inputStyle.labelInput__checkbox}></span>}
+      {type === 'checkbox' && <span className={style.labelInput__checkbox}></span>}
     </label>
   );
-}
+};
+
+export default Input;

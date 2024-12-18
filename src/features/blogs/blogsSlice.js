@@ -1,8 +1,45 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { URL } from '../../utils/constants';
 
+export const createNewUser = createAsyncThunk(
+  '@@create/createNewUser',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${URL}/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error(response.status);
+    } catch (error) {
+      return rejectWithValue(`Ошибка регистрации пользователя ${error}`);
+    }
+  }
+);
+
+export const loginUser = createAsyncThunk(
+  '@@login/loginUser',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${URL}/users/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error(response.status);
+      return await response.json();
+    } catch (error) {
+      return rejectWithValue(`Ошибка авторизовывания пользователя ${error}`);
+    }
+  }
+);
+
 export const loadBlogs = createAsyncThunk(
-  '@@blogs/loadBlogs',
+  '@@load/loadBlogs',
   async (offset = 0, { rejectWithValue }) => {
     try {
       const response = await fetch(`${URL}/articles?limit=5&offset=${offset}`);
@@ -14,25 +51,100 @@ export const loadBlogs = createAsyncThunk(
   }
 );
 
-// export const loadBlog = createAsyncThunk(
-//   '@@blog/loadBlog',
-//   async (slug = '', { rejectWithValue }) => {
-//     try {
-//       const response = await fetch(`${URL}/articles/${slug}`);
-//       if (!response.ok) throw new Error(response.status);
-//       return await response.json();
-//     } catch (error) {
-//       return rejectWithValue(`Ошибка в получении поста ${error}`);
-//     }
-//   }
-// );
+export const editPrifile = createAsyncThunk(
+  '@@edit/editPrifile',
+  async (data, { rejectWithValue, getState }) => {
+    const {
+      currentUser: { token },
+    } = getState();
+    try {
+      const response = await fetch(`${URL}/user`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error(response.status);
+      return await response.json();
+    } catch (error) {
+      return rejectWithValue(`Ошибка редактирования профиля ${error}`);
+    }
+  }
+);
+
+export const createArticle = createAsyncThunk(
+  '@@create/createArticle',
+  async (data, { rejectWithValue, getState }) => {
+    const {
+      currentUser: { token },
+    } = getState();
+    try {
+      const response = await fetch(`${URL}/articles`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      return await response.json();
+    } catch (error) {
+      return rejectWithValue(`Ошибка редактирования профиля ${error}`);
+    }
+  }
+);
+
+export const editArticle = createAsyncThunk(
+  '@@edit/editArticle',
+  async (data, { rejectWithValue, getState }) => {
+    const { newArticle, slug } = data;
+    const {
+      currentUser: { token },
+    } = getState();
+    try {
+      const response = await fetch(`${URL}/articles/${slug}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newArticle),
+      });
+      return await response.json();
+    } catch (error) {
+      return rejectWithValue(`Ошибка редактирования поста ${error}`);
+    }
+  }
+);
+
+export const deleteArticle = createAsyncThunk(
+  '@@delete/deleteArticle',
+  async (slug, { rejectWithValue, getState }) => {
+    const {
+      currentUser: { token },
+    } = getState();
+    try {
+      await fetch(`${URL}/articles/${slug}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error) {
+      return rejectWithValue(`Ошибка удаления поста ${error}`);
+    }
+  }
+);
 
 const initialState = {
+  currentUser: null,
   articles: [],
   article: null,
   articlesCount: 0,
   isLoading: false,
-  isLoggedIn: true,
+  isLoggedIn: false,
   error: null,
   isLike: false,
   currentPage: 1,
@@ -50,6 +162,10 @@ const blogsSlice = createSlice({
       state.currentPage = action.payload;
       state.offset = action.payload * 5 - 5;
     },
+    setLogOut: (state) => {
+      state.isLoggedIn = false;
+      state.currentUser = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -59,10 +175,28 @@ const blogsSlice = createSlice({
         state.articles = [...articles];
         state.articlesCount = articlesCount;
       })
-      // .addCase(loadBlog.fulfilled, (state, action) => {
-      //   state.isLoading = false;
-      //   state.article = action.payload.article;
-      // })
+      .addCase(createNewUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.currentUser = action.payload;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.currentUser = action.payload.user;
+        state.isLoggedIn = true;
+      })
+      .addCase(editPrifile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.currentUser = action.payload.user;
+      })
+      .addCase(createArticle.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(editArticle.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(deleteArticle.fulfilled, (state) => {
+        state.isLoading = false;
+      })
       .addMatcher(
         (action) => action.type.endsWith('/pending'),
         (state) => {
@@ -80,7 +214,7 @@ const blogsSlice = createSlice({
   },
 });
 
-export const { setLoading, setPage } = blogsSlice.actions;
+export const { setLoading, setPage, setLogOut } = blogsSlice.actions;
 
 export default blogsSlice.reducer;
 
@@ -91,3 +225,4 @@ export const errorSelector = (state) => state.error;
 export const currentPageSelector = (state) => state.currentPage;
 export const offsetSelector = (state) => state.offset;
 export const loggedInSelector = (state) => state.isLoggedIn;
+export const userSelector = (state) => state.currentUser;

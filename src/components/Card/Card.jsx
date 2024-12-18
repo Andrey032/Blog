@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
-import Like from '../Like/Like';
-import cardStyle from './Card.module.scss';
 import { format } from 'date-fns';
 
-export default function Card({
+import Like from '../Like/Like';
+
+import style from './Card.module.scss';
+
+const Card = ({
   slug,
   title,
   favoritesCount,
@@ -11,32 +13,32 @@ export default function Card({
   description,
   createdAt,
   author: { username, image },
-}) {
+}) => {
   return (
-    <li className={cardStyle.card}>
-      <div className={cardStyle.card__info}>
-        <div className={cardStyle.card__containerTitle}>
-          <Link to={`/articles/${slug}`} className={cardStyle.card__title}>
+    <li className={style.card}>
+      <div className={style.card__info}>
+        <div className={style.card__containerTitle}>
+          <Link to={`/articles/${slug}`} className={style.card__title}>
             {title}
           </Link>
           <Like like={favoritesCount} />
         </div>
         {tagList?.map((tag, i) => (
-          <span key={`${tag}${i}`} className={cardStyle.card__tag}>
+          <span key={`${tag}${i}`} className={style.card__tag}>
             {tag}
           </span>
         ))}
-        <p className={cardStyle.card__text}>{description}</p>
+        <p className={style.card__text}>{description}</p>
       </div>
-      <div className={cardStyle.card__userContainer}>
-        <div className={cardStyle.card__user}>
-          <h2 className={cardStyle.card__name}>{username}</h2>
-          <span className={cardStyle.card__date}>
-            {format(new Date(createdAt), 'MMMM d, yyyy')}
-          </span>
+      <div className={style.card__userContainer}>
+        <div className={style.card__user}>
+          <h2 className={style.card__name}>{username}</h2>
+          <span className={style.card__date}>{format(new Date(createdAt), 'MMMM d, yyyy')}</span>
         </div>
-        <img className={cardStyle.card__avatar} src={image} alt='аватар' />
+        <img className={style.card__avatar} src={image} alt='аватар' />
       </div>
     </li>
   );
-}
+};
+
+export default Card;
