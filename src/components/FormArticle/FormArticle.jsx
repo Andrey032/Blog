@@ -6,7 +6,7 @@ import ButtonSubmit from '../ButtonSubmit';
 
 import style from './FormArticle.module.scss';
 
-const FormArticle = ({ title, onSubmit, tags, setTags, article = {} }) => {
+const FormArticle = ({ title, onSubmit, tags, article = {}, setTags }) => {
   const {
     handleSubmit,
     register,

@@ -1,30 +1,16 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import { editArticle, setLoading } from '../../features/blogs/blogsSlice';
-import { URL } from '../../utils/constants';
+import { editArticle } from '../../features/blogs/blogsSlice';
 import FormArticle from '../FormArticle';
+import { useState } from 'react';
 
 const EditArticle = () => {
-  const [data, setData] = useState(null);
-  const [tags, setTags] = useState([]);
+  const { article } = useLoaderData();
+  const [tags, setTags] = useState(article.tagList);
   const { slug } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    dispatch(setLoading(true));
-    fetch(`${URL}/articles/${slug}`)
-      .then((response) => {
-        return response.json();
-      })
-      .then(({ article }) => {
-        setData(article);
-        setTags(article.tagList);
-      })
-      .finally(dispatch(setLoading(false)));
-  }, [dispatch, slug]);
 
   const onSubmit = (data) => {
     const newArticle = {
@@ -40,14 +26,14 @@ const EditArticle = () => {
     navigate('/articles');
   };
 
-  if (!data) return;
+  if (!article) return;
 
   return (
     <FormArticle
       title='Edit article'
       tags={tags}
       onSubmit={onSubmit}
-      article={data}
+      article={article}
       setTags={setTags}
     />
   );

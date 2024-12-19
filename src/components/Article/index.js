@@ -1,3 +1,3 @@
-import Article from './Article';
+import { Article, articleLoader } from './Article';
 
-export default Article;
+export { Article, articleLoader };

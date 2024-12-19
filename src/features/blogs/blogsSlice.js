@@ -138,6 +138,26 @@ export const deleteArticle = createAsyncThunk(
   }
 );
 
+export const favoriteArticle = createAsyncThunk(
+  '@@favorite/favoriteArticle',
+  async (slug, { rejectWithValue, getState }) => {
+    const {
+      currentUser: { token },
+    } = getState();
+    try {
+      const response = await fetch(`${URL}/articles/${slug}/favorite`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.json();
+    } catch (error) {
+      return rejectWithValue(`Ошибка добавления поста в избранное ${error}`);
+    }
+  }
+);
+
 const initialState = {
   currentUser: null,
   articles: [],
@@ -146,7 +166,6 @@ const initialState = {
   isLoading: false,
   isLoggedIn: false,
   error: null,
-  isLike: false,
   currentPage: 1,
   offset: 0,
 };
@@ -195,6 +214,21 @@ const blogsSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(deleteArticle.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(favoriteArticle.fulfilled, (state, action) => {
+        console.log(action.payload.article);
+
+        state.articles = state.articles.map((article) => {
+          return article.slug === action.payload.article.slug
+            ? {
+                ...article,
+                favorited: action.payload.article.favorited,
+                favoritesCount: action.payload.article.favoritesCount,
+              }
+            : article;
+        });
+
         state.isLoading = false;
       })
       .addMatcher(

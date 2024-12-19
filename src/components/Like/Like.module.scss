@@ -12,20 +12,34 @@
     width: 1.6rem;
     height: 1.6rem;
     background-image: url('../../../public/heart.svg');
+    background-repeat: no-repeat;
+    background-position: center;
     margin-right: 3px;
     cursor: pointer;
-    
-    &:checked::after {
-      content: '';
-      width: 1.6rem;
-      height: 1.6rem;
-      background-image: url('../../../public/heart_red.svg');
-      background-repeat: no-repeat;
-      background-position: center;
-      background-color: variables.$backgroundColorBase;
-    }
+
+    // &:checked::after {
+    //   content: '';
+    //   width: 1.6rem;
+    //   height: 1.6rem;
+    //   background-image: url('../../../public/heart_red.svg');
+    //   background-repeat: no-repeat;
+    //   background-position: center;
+    //   background-color: variables.$backgroundColorBase;
+    // }
   }
 
+  &__favorited {
+    appearance: none;
+    display: inline-grid;
+    place-content: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    background-image: url('../../../public/heart_red.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 3px;
+    cursor: pointer;
+  }
 
   &__label {
     font-size: variables.$fontSize-XS;

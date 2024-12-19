@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLoaderData, useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import Markdown from 'markdown-to-jsx';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,45 +6,31 @@ import { Button as ButtonAntd, Popconfirm } from 'antd';
 
 import Like from '../Like/Like';
 import Button from '../Button';
-import {
-  deleteArticle,
-  loggedInSelector,
-  setLoading,
-  userSelector,
-} from '../../features/blogs/blogsSlice';
+import { deleteArticle, loggedInSelector, userSelector } from '../../features/blogs/blogsSlice';
 import { URL } from '../../utils/constants';
 
 import style from './Article.module.scss';
 
 const Article = () => {
+  const { article } = useLoaderData();
   const { slug } = useParams();
-  const [post, setPost] = useState(null);
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(loggedInSelector);
   const currentUser = useSelector(userSelector);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    dispatch(setLoading(true));
-    fetch(`${URL}/articles/${slug}`)
-      .then((response) => {
-        return response.json();
-      })
-      .then(({ article }) => setPost(article))
-      .finally(dispatch(setLoading(false)));
-  }, [dispatch, slug]);
-
-  if (post === null) return;
+  if (article === null) return;
 
   const {
     title,
     favoritesCount,
+    favorited,
     tagList,
     description,
     author: { username, image },
     createdAt,
     body,
-  } = post;
+  } = article;
 
   const confirm = () => {
     dispatch(deleteArticle(slug));
@@ -59,7 +44,7 @@ const Article = () => {
           <div className={style.post__containerDescription}>
             <div className={style.post__containerTitle}>
               <h2 className={style.post__title}>{title}</h2>
-              <Like like={favoritesCount} />
+              <Like like={favoritesCount} isFavorited={favorited} slug={slug} />
             </div>
             {tagList.map((tag, i) => (
               <span key={`${tag}${i}`} className={style.post__tag}>
@@ -103,4 +88,9 @@ const Article = () => {
   );
 };
 
-export default Article;
+const articleLoader = async ({ request, params }) => {
+  const response = await fetch(`${URL}/articles/${params.slug}`);
+  return response.json();
+};
+
+export { Article, articleLoader };

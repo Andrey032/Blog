@@ -8,6 +8,7 @@ import style from './CardsList.module.scss';
 
 const CardsList = () => {
   const articles = useSelector(articlesSelector);
+
   return (
     <>
       <ul className={style.cardsList}>

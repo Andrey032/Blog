@@ -9,6 +9,7 @@ const Card = ({
   slug,
   title,
   favoritesCount,
+  favorited,
   tagList,
   description,
   createdAt,
@@ -21,7 +22,7 @@ const Card = ({
           <Link to={`/articles/${slug}`} className={style.card__title}>
             {title}
           </Link>
-          <Like like={favoritesCount} />
+          <Like like={favoritesCount} isFavorited={favorited} slug={slug} />
         </div>
         {tagList?.map((tag, i) => (
           <span key={`${tag}${i}`} className={style.card__tag}>
