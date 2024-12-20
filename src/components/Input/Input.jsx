@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import { useFormContext } from 'react-hook-form';
 
 import style from './Input.module.scss';
 
@@ -9,12 +10,18 @@ const Input = ({
   pattern = '',
   title,
   required = false,
-  register,
   minLength,
   maxLength,
-  errors = '',
   indent = false,
 }) => {
+  const {
+    register,
+    watch,
+    formState: { errors },
+  } = useFormContext();
+
+  const password = watch('password');
+
   const input = classnames(
     type === 'checkbox'
       ? style.labelInput__checkboxInput
@@ -29,6 +36,32 @@ const Input = ({
       : `${style.labelInput} ${indent && style.labelInput__indent}`
   );
 
+  const validationRules = {
+    required,
+    pattern: pattern
+      ? {
+          value: pattern,
+          message: 'Перепроверьте введённые данные',
+        }
+      : undefined,
+    minLength: minLength
+      ? {
+          value: minLength,
+          message: `Минимум ${minLength} символов`,
+        }
+      : undefined,
+    maxLength: maxLength
+      ? {
+          value: maxLength,
+          message: `Максимум ${maxLength} символов`,
+        }
+      : undefined,
+  };
+
+  if (name === 'confirmPassword') {
+    validationRules.validate = (value) => value === password || 'Пароли не совпадают';
+  }
+
   return (
     <label className={label}>
       {text}
@@ -37,22 +70,7 @@ const Input = ({
         type={type}
         placeholder={text}
         title={title}
-        {...(register &&
-          register(name, {
-            required,
-            pattern: {
-              value: pattern,
-              message: `Перепроверьте введённые данные`,
-            },
-            minLength: {
-              value: minLength,
-              message: `Минимум ${minLength} символа`,
-            },
-            maxLength: {
-              value: maxLength,
-              message: `Максимум ${maxLength} символов`,
-            },
-          }))}
+        {...register(name, validationRules)}
       />
       {errors[name] && (
         <span

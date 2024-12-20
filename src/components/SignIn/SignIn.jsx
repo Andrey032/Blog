@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -16,12 +16,7 @@ const SignIn = () => {
 
   const fromPage = location.state?.from?.pathname || '/';
 
-  const {
-    handleSubmit,
-    register,
-    formState: { errors, isValid },
-    reset,
-  } = useForm({
+  const methods = useForm({
     mode: 'onChange',
   });
 
@@ -33,37 +28,40 @@ const SignIn = () => {
       },
     };
     dispatch(loginUser(userData));
+    methods.reset();
     navigate(fromPage, { replace: true });
-    reset();
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)} title='Sign In' textBtn='Login' isValid={isValid}>
-      <div className={style.container}>
-        <Input
-          text='Email address'
-          name='email'
-          type='email'
-          pattern={email}
-          required
-          register={register}
-          errors={errors}
-          title='Латинскими буквами в формате mail@mail.com'
-        />
-        <Input
-          text='Password'
-          name='password'
-          type='password'
-          pattern={password}
-          required
-          register={register}
-          minLength={6}
-          maxLength={40}
-          errors={errors}
-          title='Не меньше 3х латинских букв и 3х цифр'
-        />
-      </div>
-    </Form>
+    <FormProvider {...methods}>
+      <Form
+        onSubmit={methods.handleSubmit(onSubmit)}
+        title='Sign In'
+        textBtn='Login'
+        isValid={methods.formState.isValid}
+      >
+        <div className={style.container}>
+          <Input
+            text='Email address'
+            name='email'
+            type='email'
+            pattern={email}
+            required
+            title='Латинскими буквами в формате mail@mail.com'
+          />
+          <Input
+            text='Password'
+            name='password'
+            type='password'
+            pattern={password}
+            required
+            minLength={6}
+            maxLength={40}
+            title='Не меньше 3х латинских букв и 3х цифр'
+          />
+        </div>
+      </Form>
+    </FormProvider>
   );
 };
 

@@ -1,6 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { URL } from '../../utils/constants';
 
+// const fetchHelper = () => {
+
+// }
+
 export const createNewUser = createAsyncThunk(
   '@@create/createNewUser',
   async (data, { rejectWithValue }) => {
@@ -80,6 +84,32 @@ export const editProfile = createAsyncThunk(
   }
 );
 
+export const getArticle = createAsyncThunk(
+  '@@get/getArticle',
+  async (slug, { rejectWithValue, getState }) => {
+    const state = getState();
+    const token = state.currentUser?.token;
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+    try {
+      const response = await fetch(`${URL}/articles/${slug}`, {
+        method: 'GET',
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Response('Произошла ошибка в загрузке поста', {
+          status: response.status,
+          statusText: 'Not found',
+        });
+      }
+      return response.json();
+    } catch (error) {
+      return rejectWithValue(`Ошибка редактирования профиля ${error}`);
+    }
+  }
+);
+
 export const createArticle = createAsyncThunk(
   '@@create/createArticle',
   async (data, { rejectWithValue, getState }) => {
@@ -95,9 +125,11 @@ export const createArticle = createAsyncThunk(
         },
         body: JSON.stringify(data),
       });
+      if (!response.ok) throw new Error(response.status);
+
       return await response.json();
     } catch (error) {
-      return rejectWithValue(`Ошибка редактирования профиля ${error}`);
+      return rejectWithValue(`Ошибка создания поста ${error}`);
     }
   }
 );
@@ -118,6 +150,7 @@ export const editArticle = createAsyncThunk(
         },
         body: JSON.stringify(newArticle),
       });
+      if (!response.ok) throw new Error(response.status);
       return await response.json();
     } catch (error) {
       return rejectWithValue(`Ошибка редактирования поста ${error}`);
@@ -132,12 +165,13 @@ export const deleteArticle = createAsyncThunk(
       currentUser: { token },
     } = getState();
     try {
-      await fetch(`${URL}/articles/${slug}`, {
+      const response = await fetch(`${URL}/articles/${slug}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      if (!response.ok) throw new Error(response.status);
     } catch (error) {
       return rejectWithValue(`Ошибка удаления поста ${error}`);
     }
@@ -157,9 +191,31 @@ export const favoriteArticle = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
+
+      if (!response.ok) throw new Error(response.status);
       return response.json();
     } catch (error) {
       return rejectWithValue(`Ошибка добавления поста в избранное ${error}`);
+    }
+  }
+);
+
+export const unfavoriteArticle = createAsyncThunk(
+  '@@unfavorite/unfavoriteArticle',
+  async (slug, { rejectWithValue, getState }) => {
+    const {
+      currentUser: { token },
+    } = getState();
+    try {
+      const response = await fetch(`${URL}/articles/${slug}/favorite`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.json();
+    } catch (error) {
+      return rejectWithValue(`Ошибка удаления поста из избранного ${error}`);
     }
   }
 );
@@ -192,6 +248,7 @@ const blogsSlice = createSlice({
       state.currentUser = null;
       state.articles = [];
       state.error = null;
+      state.article = null;
     },
   },
   extraReducers: (builder) => {
@@ -215,6 +272,10 @@ const blogsSlice = createSlice({
         state.isLoading = false;
         state.currentUser = action.payload.user;
       })
+      .addCase(getArticle.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.article = action.payload.article;
+      })
       .addCase(createArticle.fulfilled, (state) => {
         state.isLoading = false;
       })
@@ -225,6 +286,7 @@ const blogsSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(favoriteArticle.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.articles = state.articles.map((article) => {
           return article.slug === action.payload.article.slug
             ? {
@@ -234,8 +296,20 @@ const blogsSlice = createSlice({
               }
             : article;
         });
-
+        state.article = action.payload.article;
+      })
+      .addCase(unfavoriteArticle.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.articles = state.articles.map((article) => {
+          return article.slug === action.payload.article.slug
+            ? {
+                ...article,
+                favorited: action.payload.article.favorited,
+                favoritesCount: action.payload.article.favoritesCount,
+              }
+            : article;
+        });
+        state.article = action.payload.article;
       })
       .addMatcher(
         (action) => action.type.endsWith('/pending'),

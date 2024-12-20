@@ -1,6 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { favoriteArticle, loggedInSelector } from '../../features/blogs/blogsSlice';
+import {
+  favoriteArticle,
+  unfavoriteArticle,
+  loggedInSelector,
+} from '../../features/blogs/blogsSlice';
 
 import style from './Like.module.scss';
 import classNames from 'classnames';
@@ -14,7 +18,11 @@ const Like = ({ like, isFavorited, slug }) => {
   );
 
   const handlefavorited = () => {
-    dispatch(favoriteArticle(slug));
+    if (isFavorited) {
+      dispatch(unfavoriteArticle(slug));
+    } else {
+      dispatch(favoriteArticle(slug));
+    }
   };
 
   return (

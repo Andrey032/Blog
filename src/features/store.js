@@ -15,7 +15,7 @@ import {
 const persistConfig = {
   key: 'user',
   storage: storage,
-  whitelist: ['isLoggedIn', 'currentUser'],
+  whitelist: ['isLoggedIn', 'currentUser', 'article'],
 };
 
 const persistedReduser = persistReducer(persistConfig, blogsSlice);

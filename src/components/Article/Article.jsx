@@ -1,26 +1,29 @@
-import { Link, useNavigate, useLoaderData, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import Markdown from 'markdown-to-jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button as ButtonAntd, Popconfirm } from 'antd';
-import { store } from '../../features/store';
 
 import Like from '../Like/Like';
 import Button from '../Button';
-import { deleteArticle, loggedInSelector, userSelector } from '../../features/blogs/blogsSlice';
-import { URL } from '../../utils/constants';
+import {
+  deleteArticle,
+  loggedInSelector,
+  oneArticleSelector,
+  userSelector,
+} from '../../features/blogs/blogsSlice';
 
 import style from './Article.module.scss';
 
 const Article = () => {
-  const { article } = useLoaderData();
   const { slug } = useParams();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(loggedInSelector);
   const currentUser = useSelector(userSelector);
+  const article = useSelector(oneArticleSelector);
   const navigate = useNavigate();
 
-  if (article === null) return;
+  if (article === null) null;
 
   const {
     title,
@@ -89,24 +92,4 @@ const Article = () => {
   );
 };
 
-const articleLoader = async ({ request, params }) => {
-  const state = store.getState();
-  const token = state.currentUser?.token;
-  const headers = token ? { Authorization: `Bearer ${token}` } : {};
-  try {
-    const response = await fetch(`${URL}/articles/${params.slug}`, {
-      method: 'GET',
-      headers,
-    });
-
-    if (!response.ok) {
-      throw new Error(`Ошибка загрузки статьи: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export { Article, articleLoader };
+export default Article;

@@ -4,6 +4,8 @@ import { format } from 'date-fns';
 import Like from '../Like/Like';
 
 import style from './Card.module.scss';
+import { useDispatch } from 'react-redux';
+import { getArticle } from '../../features/blogs/blogsSlice';
 
 const Card = ({
   slug,
@@ -15,11 +17,17 @@ const Card = ({
   createdAt,
   author: { username, image },
 }) => {
+  const dispatch = useDispatch();
+
+  const openArticle = () => {
+    dispatch(getArticle(slug));
+  };
+
   return (
     <li className={style.card}>
       <div className={style.card__info}>
         <div className={style.card__containerTitle}>
-          <Link to={`/articles/${slug}`} className={style.card__title}>
+          <Link to={`/articles/${slug}`} className={style.card__title} onClick={openArticle}>
             {title}
           </Link>
           <Like like={favoritesCount} isFavorited={favorited} slug={slug} />

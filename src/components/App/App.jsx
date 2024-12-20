@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import CardsList from '../CardsList';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
 import Layout from '../Layout';
-import { Article, articleLoader } from '../Article';
+import Article from '../Article';
 import SignUp from '../SignUp';
 import SignIn from '../SignIn';
 import EditProfile from '../EditProfile';
@@ -21,13 +21,14 @@ import EditArticle from '../EditArticle';
 import PrivateRoute from '../PrivateRoute';
 
 import { loadBlogs, loggedInSelector, offsetSelector } from '../../features/blogs/blogsSlice';
+import Error from '../Error';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Layout />}>
       <Route index element={<CardsList />} />
       <Route path='articles' element={<Navigate to='/' replace />} />
-      <Route path='articles/:slug' element={<Article />} loader={articleLoader} />
+      <Route path='articles/:slug' element={<Article />} errorElement={<Error />} />
 
       <Route
         path='articles/:slug/edit'
@@ -36,7 +37,7 @@ const router = createBrowserRouter(
             <EditArticle />
           </PrivateRoute>
         }
-        loader={articleLoader}
+        errorElement={<Error />}
       />
       <Route
         path='new-article'
