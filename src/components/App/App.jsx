@@ -20,7 +20,7 @@ import CreateArticle from '../CreateArticle';
 import EditArticle from '../EditArticle';
 import PrivateRoute from '../PrivateRoute';
 
-import { loadBlogs, offsetSelector } from '../../features/blogs/blogsSlice';
+import { loadBlogs, loggedInSelector, offsetSelector } from '../../features/blogs/blogsSlice';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -75,10 +75,11 @@ const router = createBrowserRouter(
 const App = () => {
   const dispatch = useDispatch();
   const offset = useSelector(offsetSelector);
+  const isLoggedIn = useSelector(loggedInSelector);
 
   useEffect(() => {
     dispatch(loadBlogs(offset));
-  }, [dispatch, offset]);
+  }, [dispatch, offset, isLoggedIn]);
 
   return (
     <div className={app}>

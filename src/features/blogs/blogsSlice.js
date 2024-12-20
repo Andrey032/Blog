@@ -40,9 +40,15 @@ export const loginUser = createAsyncThunk(
 
 export const loadBlogs = createAsyncThunk(
   '@@load/loadBlogs',
-  async (offset = 0, { rejectWithValue }) => {
+  async (offset = 0, { rejectWithValue, getState }) => {
+    const state = getState();
+    const token = state.currentUser?.token;
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
     try {
-      const response = await fetch(`${URL}/articles?limit=5&offset=${offset}`);
+      const response = await fetch(`${URL}/articles?limit=5&offset=${offset}`, {
+        method: 'GET',
+        headers,
+      });
       if (!response.ok) throw new Error(response.status);
       return await response.json();
     } catch (error) {
@@ -51,8 +57,8 @@ export const loadBlogs = createAsyncThunk(
   }
 );
 
-export const editPrifile = createAsyncThunk(
-  '@@edit/editPrifile',
+export const editProfile = createAsyncThunk(
+  '@@edit/editProfile',
   async (data, { rejectWithValue, getState }) => {
     const {
       currentUser: { token },
@@ -174,9 +180,9 @@ const blogsSlice = createSlice({
   name: '@@blog',
   initialState: initialState,
   reducers: {
-    setLoading: (state, action) => {
-      state.isLoading = action.payload;
-    },
+    // setLoading: (state, action) => {
+    //   state.isLoading = action.payload;
+    // },
     setPage: (state, action) => {
       state.currentPage = action.payload;
       state.offset = action.payload * 5 - 5;
@@ -184,6 +190,8 @@ const blogsSlice = createSlice({
     setLogOut: (state) => {
       state.isLoggedIn = false;
       state.currentUser = null;
+      state.articles = [];
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -194,16 +202,16 @@ const blogsSlice = createSlice({
         state.articles = [...articles];
         state.articlesCount = articlesCount;
       })
-      .addCase(createNewUser.fulfilled, (state, action) => {
+      .addCase(createNewUser.fulfilled, (state) => {
         state.isLoading = false;
-        state.currentUser = action.payload;
+        // state.currentUser = action.payload;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.currentUser = action.payload.user;
         state.isLoggedIn = true;
       })
-      .addCase(editPrifile.fulfilled, (state, action) => {
+      .addCase(editProfile.fulfilled, (state, action) => {
         state.isLoading = false;
         state.currentUser = action.payload.user;
       })
@@ -217,8 +225,6 @@ const blogsSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(favoriteArticle.fulfilled, (state, action) => {
-        console.log(action.payload.article);
-
         state.articles = state.articles.map((article) => {
           return article.slug === action.payload.article.slug
             ? {
@@ -253,6 +259,7 @@ export const { setLoading, setPage, setLogOut } = blogsSlice.actions;
 export default blogsSlice.reducer;
 
 export const articlesSelector = (state) => state.articles;
+export const oneArticleSelector = (state) => state.article;
 export const articlesCountSelector = (state) => state.articlesCount;
 export const loadingSelector = (state) => state.isLoading;
 export const errorSelector = (state) => state.error;

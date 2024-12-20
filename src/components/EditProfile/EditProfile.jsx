@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import Form from '../Form';
 import Input from '../Input';
 import { username, email, password, url } from '../../utils/regex';
-import { editPrifile } from '../../features/blogs/blogsSlice';
+import { editProfile } from '../../features/blogs/blogsSlice';
 
 import style from './EditProfile.module.scss';
 import { useNavigate } from 'react-router-dom';
@@ -31,7 +31,7 @@ const EditProfile = () => {
         image: data.url,
       },
     };
-    dispatch(editPrifile(editData));
+    dispatch(editProfile(editData));
     reset();
     navigate('/articles');
   };

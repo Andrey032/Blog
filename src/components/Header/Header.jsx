@@ -43,12 +43,8 @@ const Header = () => {
         <div className={style.header__containerLogout}>
           <Button text='Create article' color='green' size='small' onClick={goCreateArticle} />
           <Link to='profile' className={style.header__user}>
-            <h3 className={style.header__userName}>{user.username}</h3>
-            <img
-              className={style.header__image}
-              src={user?.image ? user.image : '/avatar.svg'}
-              alt='аватар'
-            />
+            <h3 className={style.header__userName}>{user?.username}</h3>
+            <img className={style.header__image} src={isLoggedIn && user?.image} alt='аватар' />
           </Link>
           <Button text='Log Out' color='grey' size='big' onClick={handleLogOut} />
         </div>

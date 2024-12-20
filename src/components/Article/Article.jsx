@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import Markdown from 'markdown-to-jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button as ButtonAntd, Popconfirm } from 'antd';
+import { store } from '../../features/store';
 
 import Like from '../Like/Like';
 import Button from '../Button';
@@ -89,8 +90,23 @@ const Article = () => {
 };
 
 const articleLoader = async ({ request, params }) => {
-  const response = await fetch(`${URL}/articles/${params.slug}`);
-  return response.json();
+  const state = store.getState();
+  const token = state.currentUser?.token;
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+  try {
+    const response = await fetch(`${URL}/articles/${params.slug}`, {
+      method: 'GET',
+      headers,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Ошибка загрузки статьи: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export { Article, articleLoader };
