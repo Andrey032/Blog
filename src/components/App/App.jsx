@@ -27,7 +27,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Layout />}>
       <Route index element={<CardsList />} />
-      <Route path='articles' element={<Navigate to='/' replace />} />
+      <Route path='articles' element={<CardsList />} />
       <Route path='articles/:slug' element={<Article />} errorElement={<Error />} />
 
       <Route
