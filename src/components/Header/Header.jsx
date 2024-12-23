@@ -44,7 +44,11 @@ const Header = () => {
           <Button text='Create article' color='green' size='small' onClick={goCreateArticle} />
           <Link to='profile' className={style.header__user}>
             <h3 className={style.header__userName}>{user?.username}</h3>
-            <img className={style.header__image} src={isLoggedIn && user?.image} alt='аватар' />
+            <img
+              className={style.header__image}
+              src={isLoggedIn && user.image ? user?.image : '/avatar.svg'}
+              alt='аватар'
+            />
           </Link>
           <Button text='Log Out' color='grey' size='big' onClick={handleLogOut} />
         </div>

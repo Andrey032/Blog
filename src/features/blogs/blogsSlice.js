@@ -1,10 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { URL } from '../../utils/constants';
 
-// const fetchHelper = () => {
-
-// }
-
 export const createNewUser = createAsyncThunk(
   '@@create/createNewUser',
   async (data, { rejectWithValue }) => {
@@ -276,8 +272,10 @@ const blogsSlice = createSlice({
         state.isLoading = false;
         state.article = action.payload.article;
       })
-      .addCase(createArticle.fulfilled, (state) => {
+      .addCase(createArticle.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.articles.unshift(action.payload.article);
+        state.articles.pop();
       })
       .addCase(editArticle.fulfilled, (state) => {
         state.isLoading = false;

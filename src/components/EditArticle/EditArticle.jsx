@@ -1,12 +1,12 @@
-import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { editArticle } from '../../features/blogs/blogsSlice';
+import { editArticle, oneArticleSelector } from '../../features/blogs/blogsSlice';
 import FormArticle from '../FormArticle';
 import { useState } from 'react';
 
 const EditArticle = () => {
-  const { article } = useLoaderData();
+  const article = useSelector(oneArticleSelector);
   const [tags, setTags] = useState(article.tagList);
   const { slug } = useParams();
   const dispatch = useDispatch();
