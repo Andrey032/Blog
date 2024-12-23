@@ -12,7 +12,13 @@ export const createNewUser = createAsyncThunk(
         },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error(response.status);
+
+      if (!response.ok) {
+        const { errors } = await response.json();
+        const allErrors = Object.entries(errors).map(([username, email]) => `${username} ${email}`);
+
+        throw new Error(allErrors.join(' '));
+      }
     } catch (error) {
       return rejectWithValue(`Ошибка регистрации пользователя ${error}`);
     }
@@ -93,15 +99,11 @@ export const getArticle = createAsyncThunk(
         headers,
       });
 
-      if (!response.ok) {
-        throw new Response('Произошла ошибка в загрузке поста', {
-          status: response.status,
-          statusText: 'Not found',
-        });
-      }
+      if (!response.ok) throw new Error(response.status);
+
       return response.json();
     } catch (error) {
-      return rejectWithValue(`Ошибка редактирования профиля ${error}`);
+      return rejectWithValue(`Ошибка в получении поста ${error}`);
     }
   }
 );
@@ -232,9 +234,6 @@ const blogsSlice = createSlice({
   name: '@@blog',
   initialState: initialState,
   reducers: {
-    // setLoading: (state, action) => {
-    //   state.isLoading = action.payload;
-    // },
     setPage: (state, action) => {
       state.currentPage = action.payload;
       state.offset = action.payload * 5 - 5;
@@ -257,7 +256,6 @@ const blogsSlice = createSlice({
       })
       .addCase(createNewUser.fulfilled, (state) => {
         state.isLoading = false;
-        // state.currentUser = action.payload;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -319,6 +317,8 @@ const blogsSlice = createSlice({
       .addMatcher(
         (action) => action.type.endsWith('/rejected'),
         (state, action) => {
+          console.log(action);
+
           state.isLoading = false;
           state.error = action.payload;
         }
