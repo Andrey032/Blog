@@ -36,7 +36,7 @@
     appearance: none;
 
     &:checked + .labelInput__checkbox {
-      background-image: url('checked.svg');
+      background-image: url('./checked.svg');
       background-position: center;
     }
   }
