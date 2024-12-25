@@ -1,16 +1,24 @@
 import { useForm, FormProvider } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 import Input from '../Input';
 import Form from '../Form';
-import { username, email, password } from '../../utils/regex';
-import { createNewUser } from '../../features/blogs/blogsSlice';
+import { usernameRegex, emailRegex, passwordRegex } from '../../utils/regex';
+import {
+  createNewUser,
+  errorSelector,
+  successfulRegistrationSelector,
+  setSuccessfulRegistration,
+} from '../../features/blogs/blogsSlice';
 
 import style from './SignUp.module.scss';
 
 const SignUp = () => {
   const dispatch = useDispatch();
+  const errorInput = useSelector(errorSelector);
+  const successfulRegistration = useSelector(successfulRegistrationSelector);
   const navigate = useNavigate();
   const methods = useForm({
     mode: 'onChange',
@@ -25,9 +33,25 @@ const SignUp = () => {
       },
     };
     dispatch(createNewUser(newUser));
-    methods.reset();
-    navigate('/sign-in', { replace: true });
   };
+
+  useEffect(() => {
+    if (errorInput?.username) {
+      methods.setError('user', {
+        type: 'validate',
+        message: 'Имя занято другим пользователем',
+      });
+    }
+    if (errorInput?.email) {
+      methods.setError('email', {
+        type: 'validate',
+        message: 'Электронная почта зарегистрирована в сети',
+      });
+    } else if (errorInput === null && successfulRegistration) {
+      navigate('/sign-in', { replace: true });
+      dispatch(setSuccessfulRegistration(false));
+    }
+  }, [methods.setError, errorInput, successfulRegistration]);
 
   return (
     <FormProvider {...methods}>
@@ -41,7 +65,7 @@ const SignUp = () => {
           <Input
             text='Username'
             name='user'
-            pattern={username}
+            pattern={usernameRegex}
             required
             minLength={3}
             maxLength={20}
@@ -51,7 +75,7 @@ const SignUp = () => {
             text='Email address'
             name='email'
             type='email'
-            pattern={email}
+            pattern={emailRegex}
             required
             title='Латинскими буквами в формате mail@mail.com'
           />
@@ -59,7 +83,7 @@ const SignUp = () => {
             text='Password'
             name='password'
             type='password'
-            pattern={password}
+            pattern={passwordRegex}
             required
             minLength={6}
             maxLength={40}
@@ -69,7 +93,7 @@ const SignUp = () => {
             text='Repeat Password'
             name='confirmPassword'
             type='password'
-            pattern={password}
+            pattern={passwordRegex}
             required
             minLength={6}
             maxLength={40}

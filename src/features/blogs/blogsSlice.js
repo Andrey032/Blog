@@ -3,7 +3,7 @@ import { URL } from '../../utils/constants';
 
 export const createNewUser = createAsyncThunk(
   '@@create/createNewUser',
-  async (data, { rejectWithValue }) => {
+  async (data, { rejectWithValue, dispatch }) => {
     try {
       const response = await fetch(`${URL}/users`, {
         method: 'POST',
@@ -14,11 +14,14 @@ export const createNewUser = createAsyncThunk(
       });
 
       if (!response.ok) {
-        const { errors } = await response.json();
-        const allErrors = Object.entries(errors).map(([username, email]) => `${username} ${email}`);
-
-        throw new Error(allErrors.join(' '));
+        if (response.status === 422) {
+          const { errors } = await response.json();
+          dispatch(setError(errors));
+        } else {
+          throw new Error(response.status);
+        }
       }
+      dispatch(setSuccessfulRegistration(true));
     } catch (error) {
       return rejectWithValue(`Ошибка регистрации пользователя ${error}`);
     }
@@ -48,8 +51,10 @@ export const loadBlogs = createAsyncThunk(
   '@@load/loadBlogs',
   async (offset = 0, { rejectWithValue, getState }) => {
     const state = getState();
-    const token = state.currentUser?.token;
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const token = state?.token;
+    const loggedIn = state.isLoggedIn;
+
+    const headers = loggedIn ? { Authorization: `Bearer ${token}` } : {};
     try {
       const response = await fetch(`${URL}/articles?limit=5&offset=${offset}`, {
         method: 'GET',
@@ -66,9 +71,8 @@ export const loadBlogs = createAsyncThunk(
 export const editProfile = createAsyncThunk(
   '@@edit/editProfile',
   async (data, { rejectWithValue, getState }) => {
-    const {
-      currentUser: { token },
-    } = getState();
+    const state = getState();
+    const token = state?.token;
     try {
       const response = await fetch(`${URL}/user`, {
         method: 'PUT',
@@ -90,7 +94,7 @@ export const getArticle = createAsyncThunk(
   '@@get/getArticle',
   async (slug, { rejectWithValue, getState }) => {
     const state = getState();
-    const token = state.currentUser?.token;
+    const token = state?.token;
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
     try {
@@ -111,9 +115,8 @@ export const getArticle = createAsyncThunk(
 export const createArticle = createAsyncThunk(
   '@@create/createArticle',
   async (data, { rejectWithValue, getState }) => {
-    const {
-      currentUser: { token },
-    } = getState();
+    const state = getState();
+    const token = state?.token;
     try {
       const response = await fetch(`${URL}/articles`, {
         method: 'POST',
@@ -136,9 +139,8 @@ export const editArticle = createAsyncThunk(
   '@@edit/editArticle',
   async (data, { rejectWithValue, getState }) => {
     const { newArticle, slug } = data;
-    const {
-      currentUser: { token },
-    } = getState();
+    const state = getState();
+    const token = state?.token;
     try {
       const response = await fetch(`${URL}/articles/${slug}`, {
         method: 'PUT',
@@ -159,9 +161,8 @@ export const editArticle = createAsyncThunk(
 export const deleteArticle = createAsyncThunk(
   '@@delete/deleteArticle',
   async (slug, { rejectWithValue, getState }) => {
-    const {
-      currentUser: { token },
-    } = getState();
+    const state = getState();
+    const token = state?.token;
     try {
       const response = await fetch(`${URL}/articles/${slug}`, {
         method: 'DELETE',
@@ -179,9 +180,8 @@ export const deleteArticle = createAsyncThunk(
 export const favoriteArticle = createAsyncThunk(
   '@@favorite/favoriteArticle',
   async (slug, { rejectWithValue, getState }) => {
-    const {
-      currentUser: { token },
-    } = getState();
+    const state = getState();
+    const token = state?.token;
     try {
       const response = await fetch(`${URL}/articles/${slug}/favorite`, {
         method: 'POST',
@@ -201,9 +201,8 @@ export const favoriteArticle = createAsyncThunk(
 export const unfavoriteArticle = createAsyncThunk(
   '@@unfavorite/unfavoriteArticle',
   async (slug, { rejectWithValue, getState }) => {
-    const {
-      currentUser: { token },
-    } = getState();
+    const state = getState();
+    const token = state?.token;
     try {
       const response = await fetch(`${URL}/articles/${slug}/favorite`, {
         method: 'DELETE',
@@ -220,11 +219,13 @@ export const unfavoriteArticle = createAsyncThunk(
 
 const initialState = {
   currentUser: null,
+  token: null,
   articles: [],
   article: null,
   articlesCount: 0,
   isLoading: false,
   isLoggedIn: false,
+  isSuccessfulRegistration: false,
   error: null,
   currentPage: 1,
   offset: 0,
@@ -244,6 +245,13 @@ const blogsSlice = createSlice({
       state.articles = [];
       state.error = null;
       state.article = null;
+      state.token = null;
+    },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
+    setSuccessfulRegistration: (state, action) => {
+      state.isSuccessfulRegistration = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -258,8 +266,10 @@ const blogsSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        const { username, email, bio, token, image } = action.payload.user;
         state.isLoading = false;
-        state.currentUser = action.payload.user;
+        state.currentUser = { username, email, bio, image };
+        state.token = token;
         state.isLoggedIn = true;
       })
       .addCase(editProfile.fulfilled, (state, action) => {
@@ -326,7 +336,7 @@ const blogsSlice = createSlice({
   },
 });
 
-export const { setLoading, setPage, setLogOut } = blogsSlice.actions;
+export const { setError, setPage, setLogOut, setSuccessfulRegistration } = blogsSlice.actions;
 
 export default blogsSlice.reducer;
 
@@ -338,4 +348,6 @@ export const errorSelector = (state) => state.error;
 export const currentPageSelector = (state) => state.currentPage;
 export const offsetSelector = (state) => state.offset;
 export const loggedInSelector = (state) => state.isLoggedIn;
+export const tokenSelector = (state) => state.isLoggedIn;
 export const userSelector = (state) => state.currentUser;
+export const successfulRegistrationSelector = (state) => state.isSuccessfulRegistration;

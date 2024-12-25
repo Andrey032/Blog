@@ -6,6 +6,7 @@ import Like from '../Like/Like';
 import style from './Card.module.scss';
 import { useDispatch } from 'react-redux';
 import { getArticle } from '../../features/blogs/blogsSlice';
+// import { useState } from 'react';
 
 const Card = ({
   slug,
@@ -17,11 +18,18 @@ const Card = ({
   createdAt,
   author: { username, image },
 }) => {
+  // const [imageSrc, setImage] = useState(image);
   const dispatch = useDispatch();
 
   const openArticle = () => {
     dispatch(getArticle(slug));
   };
+
+  // const handleImageError = () => {
+  //   console.log('/avatar.svg');
+
+  //   setImage('/avatar.svg');
+  // };
 
   return (
     <li className={style.card}>
@@ -44,7 +52,12 @@ const Card = ({
           <h2 className={style.card__name}>{username}</h2>
           <span className={style.card__date}>{format(new Date(createdAt), 'MMMM d, yyyy')}</span>
         </div>
-        <img className={style.card__avatar} src={image} alt='аватар' />
+        <img
+          className={style.card__avatar}
+          src={image}
+          alt='аватар'
+          // onError={handleImageError}
+        />
       </div>
     </li>
   );

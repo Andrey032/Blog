@@ -13,9 +13,9 @@ import {
 } from 'redux-persist';
 
 const persistConfig = {
-  key: 'user',
+  key: 'token',
   storage: storage,
-  whitelist: ['isLoggedIn', 'currentUser', 'article'],
+  whitelist: ['token'],
 };
 
 const persistedReduser = persistReducer(persistConfig, blogsSlice);

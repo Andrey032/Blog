@@ -23,7 +23,7 @@ const Article = () => {
   const article = useSelector(oneArticleSelector);
   const navigate = useNavigate();
 
-  if (article === null) null;
+  if (article === null) return;
 
   const {
     title,

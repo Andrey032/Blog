@@ -1,11 +1,12 @@
 import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 import Form from '../Form';
 import Input from '../Input';
-import { email, password } from '../../utils/regex';
-import { loginUser } from '../../features/blogs/blogsSlice';
+import { emailRegex, passwordRegex } from '../../utils/regex';
+import { errorSelector, loggedInSelector, loginUser } from '../../features/blogs/blogsSlice';
 
 import style from './SignIn.module.scss';
 
@@ -13,6 +14,8 @@ const SignIn = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+  const errorInput = useSelector(errorSelector);
+  const isLoggedIn = useSelector(loggedInSelector);
 
   const fromPage = location.state?.from?.pathname || '/';
 
@@ -28,9 +31,22 @@ const SignIn = () => {
       },
     };
     dispatch(loginUser(userData));
-    methods.reset();
-    navigate(fromPage, { replace: true });
   };
+
+  useEffect(() => {
+    if (errorInput && !isLoggedIn) {
+      methods.setError('email', {
+        type: 'validate',
+        message: 'электронная почта или пароль: недействителен',
+      });
+      methods.setError('password', {
+        type: 'validate',
+        message: 'электронная почта или пароль: недействителен',
+      });
+    } else if (errorInput === null && isLoggedIn) {
+      navigate(fromPage, { replace: true });
+    }
+  }, [methods.setError, errorInput, navigate, fromPage, isLoggedIn]);
 
   return (
     <FormProvider {...methods}>
@@ -45,7 +61,7 @@ const SignIn = () => {
             text='Email address'
             name='email'
             type='email'
-            pattern={email}
+            pattern={emailRegex}
             required
             title='Латинскими буквами в формате mail@mail.com'
           />
@@ -53,7 +69,7 @@ const SignIn = () => {
             text='Password'
             name='password'
             type='password'
-            pattern={password}
+            pattern={passwordRegex}
             required
             minLength={6}
             maxLength={40}

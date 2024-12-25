@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Form from '../Form';
 import Input from '../Input';
-import { username, email, password, url } from '../../utils/regex';
+import { usernameRegex, emailRegex, passwordRegex, urlRegex } from '../../utils/regex';
 import { editProfile } from '../../features/blogs/blogsSlice';
 
 import style from './EditProfile.module.scss';
@@ -42,7 +42,7 @@ const EditProfile = () => {
           <Input
             text='Username'
             name='user'
-            pattern={username}
+            pattern={usernameRegex}
             required
             minLength={3}
             maxLength={20}
@@ -52,7 +52,7 @@ const EditProfile = () => {
             text='Email address'
             name='email'
             type='email'
-            pattern={email}
+            pattern={emailRegex}
             required
             title='Латинскими буквами в формате mail@mail.com'
           />
@@ -60,7 +60,7 @@ const EditProfile = () => {
             text='New password'
             name='password'
             type='password'
-            pattern={password}
+            pattern={passwordRegex}
             required
             minLength={6}
             maxLength={40}
@@ -70,7 +70,7 @@ const EditProfile = () => {
             text='Avatar image (url)'
             name='url'
             type='url'
-            pattern={url}
+            pattern={urlRegex}
             required
             title='Введите коректный URL формата https://...com'
           />
