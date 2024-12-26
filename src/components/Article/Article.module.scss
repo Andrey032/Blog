@@ -58,10 +58,6 @@
     @extend %date;
   }
 
-  &__avatar {
-    @extend %avatar;
-  }
-
   &__containerBtn {
     display: flex;
     justify-content: flex-end;

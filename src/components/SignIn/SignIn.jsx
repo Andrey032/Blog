@@ -5,8 +5,8 @@ import { useEffect } from 'react';
 
 import Form from '../Form';
 import Input from '../Input';
-import { emailRegex, passwordRegex } from '../../utils/regex';
-import { errorSelector, loggedInSelector, loginUser } from '../../features/blogs/blogsSlice';
+import { emailRegex, passwordRegex } from '../../constants/regex';
+import { errorSelector, tokenSelector, loginUser } from '../../features/blogs/blogsSlice';
 
 import style from './SignIn.module.scss';
 
@@ -15,7 +15,7 @@ const SignIn = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const errorInput = useSelector(errorSelector);
-  const isLoggedIn = useSelector(loggedInSelector);
+  const token = useSelector(tokenSelector);
 
   const fromPage = location.state?.from?.pathname || '/';
 
@@ -34,7 +34,7 @@ const SignIn = () => {
   };
 
   useEffect(() => {
-    if (errorInput && !isLoggedIn) {
+    if (errorInput && !token) {
       methods.setError('email', {
         type: 'validate',
         message: 'электронная почта или пароль: недействителен',
@@ -43,10 +43,10 @@ const SignIn = () => {
         type: 'validate',
         message: 'электронная почта или пароль: недействителен',
       });
-    } else if (errorInput === null && isLoggedIn) {
+    } else if (errorInput === null && token) {
       navigate(fromPage, { replace: true });
     }
-  }, [methods.setError, errorInput, navigate, fromPage, isLoggedIn]);
+  }, [methods.setError, errorInput, navigate, fromPage, token]);
 
   return (
     <FormProvider {...methods}>

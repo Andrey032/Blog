@@ -1,12 +1,11 @@
+import { Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 
 import Like from '../Like/Like';
+import ImageComponent from '../ImageComponent/ImageComponent';
 
 import style from './Card.module.scss';
-import { useDispatch } from 'react-redux';
-import { getArticle } from '../../features/blogs/blogsSlice';
-// import { useState } from 'react';
 
 const Card = ({
   slug,
@@ -18,27 +17,14 @@ const Card = ({
   createdAt,
   author: { username, image },
 }) => {
-  // const [imageSrc, setImage] = useState(image);
-  const dispatch = useDispatch();
-
-  const openArticle = () => {
-    dispatch(getArticle(slug));
-  };
-
-  // const handleImageError = () => {
-  //   console.log('/avatar.svg');
-
-  //   setImage('/avatar.svg');
-  // };
-
   return (
     <li className={style.card}>
       <div className={style.card__info}>
         <div className={style.card__containerTitle}>
-          <Link to={`/articles/${slug}`} className={style.card__title} onClick={openArticle}>
+          <Link to={`/articles/${slug}`} className={style.card__title}>
             {title}
           </Link>
-          <Like like={favoritesCount} isFavorited={favorited} slug={slug} />
+          <Like count={favoritesCount} isFavorited={favorited} slug={slug} />
         </div>
         {tagList?.map((tag, i) => (
           <span key={`${tag}${i}`} className={style.card__tag}>
@@ -52,12 +38,9 @@ const Card = ({
           <h2 className={style.card__name}>{username}</h2>
           <span className={style.card__date}>{format(new Date(createdAt), 'MMMM d, yyyy')}</span>
         </div>
-        <img
-          className={style.card__avatar}
-          src={image}
-          alt='аватар'
-          // onError={handleImageError}
-        />
+        <Suspense>
+          <ImageComponent image={image} />
+        </Suspense>
       </div>
     </li>
   );

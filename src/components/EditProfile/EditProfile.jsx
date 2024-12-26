@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Form from '../Form';
 import Input from '../Input';
-import { usernameRegex, emailRegex, passwordRegex, urlRegex } from '../../utils/regex';
+import { usernameRegex, emailRegex, passwordRegex, urlRegex } from '../../constants/regex';
 import { editProfile } from '../../features/blogs/blogsSlice';
 
 import style from './EditProfile.module.scss';

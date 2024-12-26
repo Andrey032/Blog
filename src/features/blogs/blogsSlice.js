@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { URL } from '../../utils/constants';
+import { URL } from '../../constants/constants';
 
 export const createNewUser = createAsyncThunk(
   '@@create/createNewUser',
@@ -52,9 +52,7 @@ export const loadBlogs = createAsyncThunk(
   async (offset = 0, { rejectWithValue, getState }) => {
     const state = getState();
     const token = state?.token;
-    const loggedIn = state.isLoggedIn;
-
-    const headers = loggedIn ? { Authorization: `Bearer ${token}` } : {};
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
     try {
       const response = await fetch(`${URL}/articles?limit=5&offset=${offset}`, {
         method: 'GET',
@@ -86,28 +84,6 @@ export const editProfile = createAsyncThunk(
       return await response.json();
     } catch (error) {
       return rejectWithValue(`Ошибка редактирования профиля ${error}`);
-    }
-  }
-);
-
-export const getArticle = createAsyncThunk(
-  '@@get/getArticle',
-  async (slug, { rejectWithValue, getState }) => {
-    const state = getState();
-    const token = state?.token;
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
-
-    try {
-      const response = await fetch(`${URL}/articles/${slug}`, {
-        method: 'GET',
-        headers,
-      });
-
-      if (!response.ok) throw new Error(response.status);
-
-      return response.json();
-    } catch (error) {
-      return rejectWithValue(`Ошибка в получении поста ${error}`);
     }
   }
 );
@@ -224,7 +200,6 @@ const initialState = {
   article: null,
   articlesCount: 0,
   isLoading: false,
-  isLoggedIn: false,
   isSuccessfulRegistration: false,
   error: null,
   currentPage: 1,
@@ -239,8 +214,12 @@ const blogsSlice = createSlice({
       state.currentPage = action.payload;
       state.offset = action.payload * 5 - 5;
     },
+    setUser: (state, action) => {
+      const { username, email, bio, token, image } = action.payload;
+      state.currentUser = { username, email, bio, image };
+      state.token = token;
+    },
     setLogOut: (state) => {
-      state.isLoggedIn = false;
       state.currentUser = null;
       state.articles = [];
       state.error = null;
@@ -252,6 +231,9 @@ const blogsSlice = createSlice({
     },
     setSuccessfulRegistration: (state, action) => {
       state.isSuccessfulRegistration = action.payload;
+    },
+    getArticle: (state, action) => {
+      state.article = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -270,15 +252,10 @@ const blogsSlice = createSlice({
         state.isLoading = false;
         state.currentUser = { username, email, bio, image };
         state.token = token;
-        state.isLoggedIn = true;
       })
       .addCase(editProfile.fulfilled, (state, action) => {
         state.isLoading = false;
         state.currentUser = action.payload.user;
-      })
-      .addCase(getArticle.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.article = action.payload.article;
       })
       .addCase(createArticle.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -293,6 +270,7 @@ const blogsSlice = createSlice({
       })
       .addCase(favoriteArticle.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.article = action.payload.article;
         state.articles = state.articles.map((article) => {
           return article.slug === action.payload.article.slug
             ? {
@@ -302,10 +280,10 @@ const blogsSlice = createSlice({
               }
             : article;
         });
-        state.article = action.payload.article;
       })
       .addCase(unfavoriteArticle.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.article = action.payload.article;
         state.articles = state.articles.map((article) => {
           return article.slug === action.payload.article.slug
             ? {
@@ -315,7 +293,6 @@ const blogsSlice = createSlice({
               }
             : article;
         });
-        state.article = action.payload.article;
       })
       .addMatcher(
         (action) => action.type.endsWith('/pending'),
@@ -327,8 +304,6 @@ const blogsSlice = createSlice({
       .addMatcher(
         (action) => action.type.endsWith('/rejected'),
         (state, action) => {
-          console.log(action);
-
           state.isLoading = false;
           state.error = action.payload;
         }
@@ -336,7 +311,8 @@ const blogsSlice = createSlice({
   },
 });
 
-export const { setError, setPage, setLogOut, setSuccessfulRegistration } = blogsSlice.actions;
+export const { setPage, setUser, setLogOut, setError, setSuccessfulRegistration, getArticle } =
+  blogsSlice.actions;
 
 export default blogsSlice.reducer;
 
@@ -347,7 +323,6 @@ export const loadingSelector = (state) => state.isLoading;
 export const errorSelector = (state) => state.error;
 export const currentPageSelector = (state) => state.currentPage;
 export const offsetSelector = (state) => state.offset;
-export const loggedInSelector = (state) => state.isLoggedIn;
-export const tokenSelector = (state) => state.isLoggedIn;
+export const tokenSelector = (state) => state.token;
 export const userSelector = (state) => state.currentUser;
 export const successfulRegistrationSelector = (state) => state.isSuccessfulRegistration;

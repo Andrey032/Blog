@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 
 import Input from '../Input';
 import Form from '../Form';
-import { usernameRegex, emailRegex, passwordRegex } from '../../utils/regex';
+import { usernameRegex, emailRegex, passwordRegex } from '../../constants/regex';
 import {
   createNewUser,
   errorSelector,

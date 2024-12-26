@@ -1,29 +1,44 @@
+import { useEffect, Suspense } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import Markdown from 'markdown-to-jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button as ButtonAntd, Popconfirm } from 'antd';
 
+import { Button as ButtonAntd, Popconfirm } from 'antd';
 import Like from '../Like/Like';
 import Button from '../Button';
+import ImageComponent from '../ImageComponent/ImageComponent';
+
 import {
   deleteArticle,
-  loggedInSelector,
+  getArticle,
   oneArticleSelector,
   userSelector,
+  tokenSelector,
 } from '../../features/blogs/blogsSlice';
+import { URL } from '../../constants/constants';
 
 import style from './Article.module.scss';
 
 const Article = () => {
   const { slug } = useParams();
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(loggedInSelector);
   const currentUser = useSelector(userSelector);
   const article = useSelector(oneArticleSelector);
+  const token = useSelector(tokenSelector);
   const navigate = useNavigate();
 
-  if (article === null) return;
+  useEffect(() => {
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    fetch(`${URL}/articles/${slug}`, {
+      method: 'GET',
+      headers,
+    })
+      .then((response) => response.json())
+      .then(({ article }) => dispatch(getArticle(article)));
+  }, [dispatch, token, slug]);
+
+  if (!article) return;
 
   const {
     title,
@@ -48,7 +63,7 @@ const Article = () => {
           <div className={style.post__containerDescription}>
             <div className={style.post__containerTitle}>
               <h2 className={style.post__title}>{title}</h2>
-              <Like like={favoritesCount} isFavorited={favorited} slug={slug} />
+              <Like count={favoritesCount} isFavorited={favorited} slug={slug} />
             </div>
             {tagList.map((tag, i) => (
               <span key={`${tag}${i}`} className={style.post__tag}>
@@ -66,9 +81,11 @@ const Article = () => {
                   {format(new Date(createdAt), 'MMMM d, yyyy')}
                 </span>
               </div>
-              <img className={style.post__avatar} src={image} alt='аватар' />
+              <Suspense>
+                <ImageComponent image={image} />
+              </Suspense>
             </div>
-            {isLoggedIn && username === currentUser.username && (
+            {token && username === currentUser.username && (
               <div className={style.post__containerBtn}>
                 <Popconfirm
                   title='Delete the task'
